@@ -1,61 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Connexion Live Webcam</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion | LiveWebcamMonetic</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>Connexion</h2>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Mot de passe">
-  <br><br>
-  <button onclick="register()">S’inscrire</button>
-  <button onclick="login()">Se connecter</button>
+  <div class="container">
+    <h2 id="formTitle">Connexion</h2>
+    <div id="feedback" class="error"></div>
+    <input type="email" id="email" placeholder="Adresse email">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button id="submitButton">Se connecter</button>
+    <div class="toggle">
+      <span id="toggleText">Pas encore de compte ? <a id="toggleLink">Créer un compte</a></span>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
-    // Configuration Firebase mise à jour
     const firebaseConfig = {
       apiKey: "AIzaSyAJmZvTW49xep3KTfzfPfd6GPWSMPM2XQA",
       authDomain: "livewebcammonetic.firebaseapp.com",
       projectId: "livewebcammonetic",
       storageBucket: "livewebcammonetic.appspot.com",
       messagingSenderId: "1047913851911",
-      appId: "1:1047913851911:web:XXXXXX" // Remplace XXXXXX par la valeur affichée dans la config complète si dispo
+      appId: "1:1047913851911:web:XXXXXXXXXX"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Fonction d'inscription
-    window.register = function() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          alert("Inscription réussie !");
-        })
-        .catch(error => {
-          alert("Erreur : " + error.message);
-        });
-    };
+    let isLogin = true;
+    const formTitle = document.getElementById("formTitle");
+    const submitButton = document.getElementById("submitButton");
+    const toggleText = document.getElementById("toggleText");
+    const toggleLink = document.getElementById("toggleLink");
+    const feedback = document.getElementById("feedback");
 
-    // Fonction de connexion
-    window.login = function() {
+    toggleLink.addEventListener("click", () => {
+      isLogin = !isLogin;
+      formTitle.innerText = isLogin ? "Connexion" : "Créer un compte";
+      submitButton.innerText = isLogin ? "Se connecter" : "S’inscrire";
+      toggleText.innerHTML = isLogin
+        ? `Pas encore de compte ? <a id="toggleLink">Créer un compte</a>`
+        : `Déjà inscrit ? <a id="toggleLink">Se connecter</a>`;
+      document.getElementById("toggleLink").addEventListener("click", toggleLink.onclick);
+      feedback.innerText = "";
+    });
+
+    submitButton.addEventListener("click", () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          alert("Connexion réussie !");
-          // Rediriger vers une page live
-          window.location.href = "page_live.html"; // Crée cette page ensuite
-        })
-        .catch(error => {
-          alert("Erreur : " + error.message);
-        });
-    };
+      feedback.innerText = "";
+
+      if (isLogin) {
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            feedback.className = "success";
+            feedback.innerText = "Connexion réussie !";
+            setTimeout(() => {
+              window.location.href = "page_live.html";
+            }, 1000);
+          })
+          .catch(err => {
+            feedback.className = "error";
+            feedback.innerText = err.message;
+          });
+      } else {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            feedback.className = "success";
+            feedback.innerText = "Compte créé avec succès !";
+            setTimeout(() => {
+              window.location.href = "page_live.html";
+            }, 1000);
+          })
+          .catch(err => {
+            feedback.className = "error";
+            feedback.innerText = err.message;
+          });
+      }
+    });
   </script>
 </body>
 </html>
