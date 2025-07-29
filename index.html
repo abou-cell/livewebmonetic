@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Connexion Live</title>
+  <meta charset="UTF-8">
+  <title>Connexion Live Webcam</title>
 </head>
 <body>
   <h2>Connexion</h2>
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Mot de passe">
-  <br>
+  <br><br>
   <button onclick="register()">S’inscrire</button>
   <button onclick="login()">Se connecter</button>
 
@@ -15,19 +16,20 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
+    // Configuration Firebase mise à jour
     const firebaseConfig = {
-      apiKey: "TA_CLE_API",
-      authDomain: "TON_PROJET.firebaseapp.com",
-      projectId: "TON_PROJET",
-      storageBucket: "TON_PROJET.appspot.com",
-      messagingSenderId: "xxx",
-      appId: "xxx"
+      apiKey: "AIzaSyAJmZvTW49xep3KTfzfPfd6GPWSMPM2XQA",
+      authDomain: "livewebcammonetic.firebaseapp.com",
+      projectId: "livewebcammonetic",
+      storageBucket: "livewebcammonetic.appspot.com",
+      messagingSenderId: "1047913851911",
+      appId: "1:1047913851911:web:XXXXXX" // Remplace XXXXXX par la valeur affichée dans la config complète si dispo
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Inscription
+    // Fonction d'inscription
     window.register = function() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -36,21 +38,22 @@
           alert("Inscription réussie !");
         })
         .catch(error => {
-          alert(error.message);
+          alert("Erreur : " + error.message);
         });
     };
 
-    // Connexion
+    // Fonction de connexion
     window.login = function() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       signInWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           alert("Connexion réussie !");
-          window.location.href = "page_live.html"; // à modifier
+          // Rediriger vers une page live
+          window.location.href = "page_live.html"; // Crée cette page ensuite
         })
         .catch(error => {
-          alert(error.message);
+          alert("Erreur : " + error.message);
         });
     };
   </script>
