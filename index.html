@@ -63,14 +63,21 @@
 
       if (isLogin) {
         signInWithEmailAndPassword(auth, email, password)
-          .then(() => {
-            feedback.className = "success";
-            feedback.innerText = "Connexion réussie !";
-            setTimeout(() => {
-              window.location.href = "page_live.html";
-            }, 1000);
+          .then((userCredential) => {
+            const user = userCredential.user;
+
+            if (user.emailVerified) {
+              feedback.className = "success";
+              feedback.innerText = "Connexion réussie ! Redirection...";
+              setTimeout(() => {
+                window.location.href = "https://livewebmonetic.carrd.co";
+              }, 1500);
+            } else {
+              feedback.className = "error";
+              feedback.innerText = "Veuillez vérifier votre adresse e-mail avant de vous connecter.";
+            }
           })
-          .catch(err => {
+          .catch((err) => {
             feedback.className = "error";
             feedback.innerText = err.message;
           });
@@ -78,10 +85,10 @@
         createUserWithEmailAndPassword(auth, email, password)
           .then(() => {
             feedback.className = "success";
-            feedback.innerText = "Compte créé avec succès !";
+            feedback.innerText = "Compte créé avec succès ! Redirection...";
             setTimeout(() => {
-              window.location.href = "page_live.html";
-            }, 1000);
+              window.location.href = "https://livewebmonetic.carrd.co";
+            }, 1500);
           })
           .catch(err => {
             feedback.className = "error";
