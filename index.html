@@ -23,7 +23,8 @@
     import {
       getAuth,
       createUserWithEmailAndPassword,
-      signInWithEmailAndPassword
+      signInWithEmailAndPassword,
+      sendEmailVerification
     } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -70,7 +71,7 @@
               feedback.className = "success";
               feedback.innerText = "Connexion réussie ! Redirection...";
               setTimeout(() => {
-                window.location.href = "https://livewebmonetic.carrd.co";
+                window.location.href = "https://balgha.carrd.co";
               }, 1500);
             } else {
               feedback.className = "error";
@@ -83,12 +84,14 @@
           });
       } else {
         createUserWithEmailAndPassword(auth, email, password)
-          .then(() => {
+          .then((userCredential) => {
             feedback.className = "success";
             feedback.innerText = "Compte créé avec succès ! Redirection...";
-            setTimeout(() => {
-              window.location.href = "https://livewebmonetic.carrd.co";
-            }, 1500);
+            sendEmailVerification(userCredential.user).finally(() => {
+              setTimeout(() => {
+                window.location.href = "verification.html";
+              }, 1500);
+            });
           })
           .catch(err => {
             feedback.className = "error";
